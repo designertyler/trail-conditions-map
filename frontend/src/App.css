@@ -11,3 +11,17 @@ html, body, #root {
     min-width: 320px;
     min-height: 480px;
 }
+
+.loading-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #ccc;
+    z-index: 9999;
+    font-size: 14px;
+}
