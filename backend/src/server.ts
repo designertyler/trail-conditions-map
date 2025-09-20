@@ -3,6 +3,8 @@ console.log('=== SERVER STARTING ===');
 import express from 'express';
 import cors from 'cors';
 import { WeatherService } from './services/WeatherService';
+import { TrailConditionsScraper } from './services/TrailConditionsScraper';
+import { supabase } from './utils/supabase';
 
 const app = express();
 console.log('App created');
@@ -28,6 +30,37 @@ app.get('/api/weather/test', async (_req, res) => {
   }
 });
 
+const scraper = new TrailConditionsScraper();
+
+// Add route to manually trigger updates
+app.get('/api/update-conditions', async (_req, res) => {
+  try {
+    await scraper.updateTrailConditions();
+    res.json({ message: 'Trail conditions updated successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update trail conditions' });
+  }
+});
+
+app.get('/api/trails', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('trails')
+      .select('*')
+      .order('name');
+
+    if (error) throw error;
+
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch trails' });
+  }
+});
+
+// Start scheduled updates
+scraper.scheduleUpdates();
+
+// Shut down gracefully
 process.on('SIGINT', () => {
   console.log('Shutting down gracefully...');
   server.close(() => {
