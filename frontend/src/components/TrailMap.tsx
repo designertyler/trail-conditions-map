@@ -5,7 +5,6 @@ import L, { type LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../App.css';
 import type { Trail } from '../types/trail';
-import { supabase } from '../utils/supabase';
 
 const getStatusIcon = (status: string) => {
   const iconMap: { [key: string]: string } = {
@@ -32,34 +31,49 @@ const TrailMap: React.FC = () => {
 
   useEffect(() => {
     async function fetchTrails() {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('trails')
-        .select('*')
-        .order('name');
+      // Check cache first
+      const cachedTrails = localStorage.getItem('trails');
+      const cacheTimestamp = localStorage.getItem('trails_timestamp');
+      const now = Date.now();
 
-      if (error) {
-        console.error('Error:', error);
+      if (
+        cachedTrails &&
+        cacheTimestamp &&
+        now - parseInt(cacheTimestamp) < 30 * 60 * 1000
+      ) {
+        setTrails(JSON.parse(cachedTrails));
         setLoading(false);
         return;
       }
 
-      const formattedTrails: Trail[] = data.map((trail: any) => ({
-        id: trail.id,
-        name: trail.name,
-        position: [trail.latitude, trail.longitude] as LatLngExpression,
-        status: trail.status,
-        lastUpdated: trail.last_updated,
-      }));
+      setLoading(true);
 
-      setTrails(formattedTrails);
-      setLoading(false);
+      try {
+        const response = await fetch('http://localhost:3001/api/trails');
+        const data = await response.json();
+
+        const formattedTrails: Trail[] = data.map((trail: any) => ({
+          id: trail.id,
+          name: trail.name,
+          position: [trail.latitude, trail.longitude] as LatLngExpression,
+          status: trail.status,
+          lastUpdated: trail.last_updated,
+        }));
+
+        // Cache the data
+        localStorage.setItem('trails', JSON.stringify(formattedTrails));
+        localStorage.setItem('trails_timestamp', now.toString());
+
+        setTrails(formattedTrails);
+      } catch (error) {
+        console.error('Failed to fetch trails:', error);
+      } finally {
+        setLoading(false);
+      }
     }
 
-    fetchTrails().catch(console.error);
+    void fetchTrails();
   }, []);
-
-  console.log('Loading state:', loading);
 
   return (
     <div style={{ width: '100%', height: '100%' }}>

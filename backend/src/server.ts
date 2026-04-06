@@ -1,5 +1,13 @@
 console.log('=== SERVER STARTING ===');
 
+console.log('=== ENVIRONMENT VARIABLES ===');
+console.log('SUPABASE_URL:', process.env.SUPABASE_URL);
+console.log(
+  'SUPABASE_ANON_KEY:',
+  process.env.SUPABASE_ANON_KEY ? 'Present' : 'Missing'
+);
+console.log('==============================');
+
 import express from 'express';
 import cors from 'cors';
 import { WeatherService } from './services/WeatherService';
