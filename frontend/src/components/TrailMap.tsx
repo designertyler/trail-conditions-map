@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import L, { type LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../App.css';
 import type { Trail } from '../types/trail';
+import mockTrails from '../data/mockTrails';
 
 const getStatusIcon = (status: string) => {
   const iconMap: { [key: string]: string } = {
@@ -26,54 +27,8 @@ const AUSTIN_CENTER: LatLngExpression = [30.2672, -97.7431];
 const MAPTILER_KEY = import.meta.env.VITE_MAPTILER_API_KEY;
 
 const TrailMap: React.FC = () => {
-  const [trails, setTrails] = useState<Trail[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchTrails() {
-      // Check cache first
-      const cachedTrails = localStorage.getItem('trails');
-      const cacheTimestamp = localStorage.getItem('trails_timestamp');
-      const now = Date.now();
-
-      if (
-        cachedTrails &&
-        cacheTimestamp &&
-        now - parseInt(cacheTimestamp) < 30 * 60 * 1000
-      ) {
-        setTrails(JSON.parse(cachedTrails));
-        setLoading(false);
-        return;
-      }
-
-      setLoading(true);
-
-      try {
-        const response = await fetch('http://localhost:3001/api/trails');
-        const data = await response.json();
-
-        const formattedTrails: Trail[] = data.map((trail: any) => ({
-          id: trail.id,
-          name: trail.name,
-          position: [trail.latitude, trail.longitude] as LatLngExpression,
-          status: trail.status,
-          lastUpdated: trail.last_updated,
-        }));
-
-        // Cache the data
-        localStorage.setItem('trails', JSON.stringify(formattedTrails));
-        localStorage.setItem('trails_timestamp', now.toString());
-
-        setTrails(formattedTrails);
-      } catch (error) {
-        console.error('Failed to fetch trails:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    void fetchTrails();
-  }, []);
+  const [trails] = useState<Trail[]>(mockTrails);
+  const [loading] = useState(false);
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
