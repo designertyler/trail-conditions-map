@@ -3,8 +3,8 @@ import './App.css';
 
 function App() {
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ flex: 1, minHeight: 0 }}>
+    <div className="h-screen flex flex-col">
+      <div className="flex-1 min-h-0">
         <TrailMap />
       </div>
     </div>

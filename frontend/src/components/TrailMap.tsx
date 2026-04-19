@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { MapContainer, Marker, Popup, TileLayer, ZoomControl } from 'react-leaflet';
 import L, { type LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import '../App.css';
 import type { Trail } from '../types/trail';
 import mockTrails from '../data/mockTrails';
 import { TrailSidePanel } from './TrailSidePanel';

@@ -1,6 +1,5 @@
-import * as React from 'react';
 import { useState } from 'react';
-import { Minimize2, Maximize2 } from 'lucide-react';
+import { ChevronDown, X } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardAction, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -81,7 +80,7 @@ export function TrailSidePanel({ trails, activeTab, onTabChange }: Props) {
               onClick={() => setListCollapsed(c => !c)}
               aria-label={listCollapsed ? 'Expand trail list' : 'Collapse trail list'}
             >
-              {listCollapsed ? <Maximize2 className="size-4" /> : <Minimize2 className="size-4" />}
+              {listCollapsed ? <ChevronDown className="size-4" /> : <X className="size-4" />}
             </Button>
           </CardAction>
         </CardHeader>
