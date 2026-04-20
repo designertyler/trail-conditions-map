@@ -55,14 +55,14 @@ interface Props {
 }
 
 export function TrailSidePanel({ trails, activeTab, onTabChange }: Props) {
-  const [listCollapsed, setListCollapsed] = useState(false);
+  const [listCollapsed, setListCollapsed] = useState(() => window.innerWidth < 640);
 
   const visible = [...trails]
     .filter(t => activeTab === 'open' ? t.status === 'open' : true)
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <div className={`flex flex-col w-[530px] ${!listCollapsed ? 'h-full min-h-0' : ''}`}>
+    <div className={`flex flex-col w-full sm:w-[530px] ${!listCollapsed ? 'h-full min-h-0' : ''}`}>
       <Card className={`rounded-lg shadow-lg border border-border gap-0 py-0 flex flex-col ${!listCollapsed ? 'flex-1 min-h-0' : ''}`}>
 
         {/* ── Header ─────────────────────────────────────────────────────────── */}

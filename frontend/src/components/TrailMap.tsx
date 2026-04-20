@@ -40,7 +40,7 @@ const TrailMap: React.FC = () => {
       {loading && <div className="loading-popup">Loading trails...</div>}
 
       {/* Side panel overlay */}
-      <div className="absolute top-8 left-8 bottom-8 z-[1000] flex flex-col">
+      <div className="absolute top-8 left-8 right-8 sm:right-auto bottom-8 z-[1000] flex flex-col">
         <TrailSidePanel trails={trails} activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
 
